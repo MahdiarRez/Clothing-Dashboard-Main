@@ -4,7 +4,6 @@ import type React from "react";
 import { useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import { X, Upload, Star, Image as ImageIcon, Crop } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
@@ -12,6 +11,7 @@ import type { ProductImage, ImageUploadProps } from "@/lib/types";
 import SectionCard from "./ui2/section-card";
 import SectionHeader from "./ui2/section-header";
 import Button from "./ui/button";
+import toast from "react-hot-toast";
 
 // convert File → dataURL
 const fileToDataUrl = (file: File): Promise<string> =>
@@ -68,7 +68,6 @@ export default function ImageUploadSection({
 	images,
 	setImages,
 }: ImageUploadProps) {
-	const { toast } = useToast();
 	const [croppingImage, setCroppingImage] = useState<ProductImage | null>(null);
 	const [crop, setCrop] = useState<any>();
 	const imgRef = useRef<HTMLImageElement>(null);
@@ -85,11 +84,7 @@ export default function ImageUploadSection({
 						isMain: images.length === 0 && files.length === 1,
 					} as ProductImage;
 				} catch {
-					toast({
-						title: "Upload Error",
-						description: `Could not process ${file.name}.`,
-						variant: "destructive",
-					});
+					toast.error(`Could not process ${file.name}.`);
 					return null;
 				}
 			}),
@@ -162,31 +157,30 @@ export default function ImageUploadSection({
 				),
 			);
 			setCroppingImage(null);
-			toast({
-				title: "Image Cropped",
-				description: "The image has been successfully cropped.",
+			toast.success("The image has been successfully cropped.", {
+				className: "min-w-fit",
 			});
 		} catch {
-			toast({
-				title: "Crop Error",
-				description: "Could not crop the image.",
-				variant: "destructive",
+			toast.error("Could not crop the image.", {
+				className: "min-w-fit",
 			});
 		}
 	};
 
 	return (
-		<SectionCard className="overflow-hidden">
+		<SectionCard className="overflow-hidden w-full h-full">
 			<SectionHeader>
-				<ImageIcon size={30} />
-				Visual Portfolio
+				<div className="p-1.5 rounded-md bg-Secondary/20">
+					<ImageIcon className="text-Secondary" />
+				</div>
+				Product Images
 			</SectionHeader>
 			<div className="px-6 py-4 space-y-6">
 				{/* Upload */}
 				<div
 					{...getRootProps()}
 					onClick={() => fileInputRef.current?.click()}
-					className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer ${
+					className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer group ${
 						isDragActive
 							? "border-black bg-gray-50"
 							: "border-gray-300 hover:border-gray-400 hover:bg-gray-100/50"
@@ -197,7 +191,7 @@ export default function ImageUploadSection({
 						className="hidden"
 					/>
 					<div className="space-y-4">
-						<div className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+						<div className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center group-hover:-translate-y-2 transition-transform duration-200">
 							<Upload
 								size={32}
 								className="text-gray-600"
@@ -249,7 +243,7 @@ export default function ImageUploadSection({
 											onClick={() => setMainImage(img.id)}
 											className={`text-xs ${
 												img.isMain
-													? "bg-yellow-500 text-black"
+													? "bg-yellow-400 text-black"
 													: "bg-white/90 text-black"
 											}`}>
 											<Star

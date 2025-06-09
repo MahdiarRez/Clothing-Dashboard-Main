@@ -22,7 +22,7 @@ interface AnimatedContentProps {
 
 const AnimateContent: React.FC<AnimatedContentProps> = ({
 	children,
-	distance = 100,
+	distance = 75,
 	direction = "vertical",
 	reverse = false,
 	duration = 0.8,

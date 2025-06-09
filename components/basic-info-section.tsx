@@ -2,7 +2,7 @@ import type { BasicInfoProps } from "@/lib/types";
 import SectionCard from "./ui2/section-card";
 import SectionHeader from "./ui2/section-header";
 import SectionBody from "./ui2/section-body";
-import { BookText } from "lucide-react";
+import { BookText, Info } from "lucide-react";
 
 export default function BasicInfoSection({
 	name,
@@ -11,9 +11,12 @@ export default function BasicInfoSection({
 	setDescription,
 }: BasicInfoProps) {
 	return (
-		<SectionCard>
+		<SectionCard className="w-full">
 			<SectionHeader>
-				<BookText /> Basic Product Information
+				<div className="p-1.5 rounded-md bg-Secondary/20">
+					<Info className="text-Secondary" />
+				</div>
+				Basic Product Information
 			</SectionHeader>
 			<SectionBody>
 				<div>

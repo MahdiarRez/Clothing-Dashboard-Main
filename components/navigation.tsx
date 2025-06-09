@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "@/components/ui/button";
 import { Eye, Shirt, SquarePlus } from "lucide-react";
+import clsx from "clsx";
 
 export default function Navigation() {
 	const pathname = usePathname();
@@ -22,25 +23,25 @@ export default function Navigation() {
 	];
 
 	return (
-		<nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-white/70">
-			<div className="px-20 mx-auto flex h-20 items-center justify-between">
+		<nav className=" container mx-auto">
+			<div className="mx-auto flex h-20 items-center justify-between">
 				<Link
 					href="/"
 					className="flex items-center gap-2 font-bold text-lg">
-					<Shirt className="h-6 w-6 text-primary" />
 					<span>Clothing Dashboard</span>
 				</Link>
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-9">
 					{navItems.map((item) => (
 						<Link
 							href={item.href}
+							className={clsx(
+								`font-medium text-black transition-all duration-200`,
+								pathname == item.href
+									? "text-Secondary/90 opacity-90 cursor-default"
+									: "hover:opacity-40",
+							)}
 							key={item.href}>
-							<Button
-								key={item.href}
-								isActive={pathname === item.href}
-								icon={item.icon}>
-								{item.label}
-							</Button>
+							{item.label}
 						</Link>
 					))}
 				</div>

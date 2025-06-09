@@ -12,7 +12,8 @@ const config: Config = {
 		extend: {
 			colors: {
 				Gray: "#F2F3F5",
-				Primary: "#FFEECF",
+				Primary: "#CEEAF7",
+				Secondary: "#F4A261",
 			},
 		},
 	},

@@ -22,6 +22,9 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import SectionCard from "@/components/ui2/section-card";
+import { Laugh } from "lucide-react";
+import HeroHeader from "@/components/ui2/heroHeader";
 
 export default function Page() {
 	const [products, setProducts] = useState<Product[]>([]);
@@ -57,14 +60,20 @@ export default function Page() {
 	}
 
 	return (
-		<div className="space-y-6">
-			<h1 className="text-3xl font-bold">View Products</h1>
+		<div className="space-y-6 pb-12 pt-16 relative">
+			<HeroHeader>
+				List of Your Porducts
+				<Laugh
+					size={30}
+					className="text-Secondary"
+				/>
+			</HeroHeader>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{products.map((product) => {
 					const mainImage =
 						product.images.find((img) => img.isMain) || product.images[0];
 					return (
-						<Card
+						<SectionCard
 							key={product.id}
 							className="flex flex-col">
 							<CardHeader>
@@ -142,7 +151,7 @@ export default function Page() {
 									Created: {new Date(product.createdAt).toLocaleDateString()}
 								</span>
 							</CardFooter>
-						</Card>
+						</SectionCard>
 					);
 				})}
 			</div>

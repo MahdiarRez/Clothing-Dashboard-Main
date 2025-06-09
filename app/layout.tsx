@@ -1,11 +1,14 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Jost, Nunito, Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/navigation";
-import { Toaster } from "@/components/ui/toaster";
+import toast, { Toaster } from "react-hot-toast";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Poppins({
+	subsets: ["latin"],
+	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
 	title: "Clothing Dashboard",
@@ -22,8 +25,8 @@ export default function RootLayout({
 			<body
 				className={`${inter.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
 				<Navigation />
-				<main className="container mx-auto p-4 pt-20">{children}</main>
-				<Toaster />
+				<main className="container mx-auto pt-12">{children}</main>
+				<Toaster position="bottom-left" />
 			</body>
 		</html>
 	);

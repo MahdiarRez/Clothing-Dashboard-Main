@@ -8,10 +8,11 @@ import ImageUploadSection from "@/components/image-upload-section";
 import SizesColorsQuantitySection from "@/components/sizes-colors-quantity-section";
 import { addProduct, initDB } from "@/lib/db";
 import type { Product, ProductImage, ProductVariant } from "@/lib/types";
-import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Smile } from "lucide-react";
 import AnimateContent from "@/components/ui2/animateContent";
+import toast from "react-hot-toast";
+import HeroHeader from "@/components/ui2/heroHeader";
 
 export default function Page() {
 	const [name, setName] = useState("");
@@ -19,7 +20,6 @@ export default function Page() {
 	const [images, setImages] = useState<ProductImage[]>([]);
 	const [variants, setVariants] = useState<ProductVariant[]>([]);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const { toast } = useToast();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -34,18 +34,12 @@ export default function Page() {
 
 	const validateForm = (): boolean => {
 		if (!name.trim()) {
-			toast({
-				title: "Validation Error",
-				description: "Product name is required.",
-				variant: "destructive",
-			});
+			toast.error("Product name is required.");
 			return false;
 		}
 		if (images.length === 0) {
-			toast({
-				title: "Validation Error",
-				description: "At least one product image is required.",
-				variant: "destructive",
+			toast.error("At least one product image is required.", {
+				className: "min-w-fit",
 			});
 			return false;
 		}
@@ -56,33 +50,23 @@ export default function Page() {
 					updated[0].isMain = true;
 					return updated;
 				});
-				toast({
-					title: "Image Notice",
-					description: "First image automatically set as main.",
-					variant: "default",
+				toast.success("First image automatically set as main.", {
+					className: "min-w-fit",
 				});
 			} else {
-				toast({
-					title: "Validation Error",
-					description: "Please select a main image.",
-					variant: "destructive",
-				});
+				toast.error("Please select a main image.", { className: "min-w-fit" });
 				return false;
 			}
 		}
 		if (variants.length === 0) {
-			toast({
-				title: "Validation Error",
-				description: "At least one size/color variant is required.",
-				variant: "destructive",
+			toast.error("At least one size/color variant is required.", {
+				className: "min-w-fit",
 			});
 			return false;
 		}
 		if (variants.some((v) => v.quantity <= 0)) {
-			toast({
-				title: "Validation Error",
-				description: "All variant quantities must be greater than 0.",
-				variant: "destructive",
+			toast.error("All variant quantities must be greater than 0.", {
+				className: "min-w-fit",
 			});
 			return false;
 		}
@@ -106,8 +90,7 @@ export default function Page() {
 
 		try {
 			await addProduct(newProduct);
-			toast({ title: "Success", description: "Product created successfully!" });
-			console.log("hi");
+			toast.success("Product created successfully!");
 			setName("");
 			setDescription("");
 			setImages([]);
@@ -115,43 +98,21 @@ export default function Page() {
 			router.push("/products");
 		} catch (error) {
 			console.error("Failed to save product:", error);
-			toast({
-				title: "Error",
-				description: "Failed to save product. See console for details.",
-				variant: "destructive",
-			});
+			toast.error("Failed to save product. See console for details.");
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
 	return (
-		<div className="space-y-6 pb-12 pt-20 relative">
-			<div className="flex flex-col items-center gap-2 mb-9">
-				<AnimateContent
-					delay={0.3}
-					direction="horizontal"
-					reverse>
-					<h1 className="text-3xl font-bold text-center flex flex-row items-center gap-2">
-						Create New Product
-						<Smile size={30} />
-					</h1>
-				</AnimateContent>
-				<AnimateContent
-					delay={0.7}
-					direction="horizontal">
-					<p className="text-base opacity-70">
-						Craft exceptional fashion pieces that define{" "}
-						<span className="text-yellow-600 font-medium text-base">
-							luxury
-						</span>{" "}
-						and{" "}
-						<span className="text-yellow-600 font-medium text-base">
-							elegance
-						</span>
-					</p>
-				</AnimateContent>
-			</div>
+		<div className="space-y-6 pb-12 pt-16 relative">
+			<HeroHeader>
+				Create New Product
+				<Smile
+					size={30}
+					className="text-Secondary"
+				/>
+			</HeroHeader>
 			<form
 				onSubmit={handleSubmit}
 				className="space-y-6">

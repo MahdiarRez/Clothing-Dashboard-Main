@@ -1,5 +1,9 @@
 "use client";
+
 import Button from "@/components/ui/button";
+import SectionCard from "./ui2/section-card";
+import SectionHeader from "./ui2/section-header";
+import SectionBody from "./ui2/section-body";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,16 +21,14 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { PencilRuler, PlusCircle, PlusSquare, Trash2 } from "lucide-react";
+import { PencilRuler, PlusSquare, Trash2 } from "lucide-react";
+
 import {
 	type ProductVariant,
 	type SizesColorsQuantityProps,
 	AVAILABLE_SIZES,
 	AVAILABLE_COLORS,
 } from "@/lib/types";
-import SectionCard from "./ui2/section-card";
-import SectionHeader from "./ui2/section-header";
-import SectionBody from "./ui2/section-body";
 
 export default function SizesColorsQuantitySection({
 	variants,
@@ -68,14 +70,17 @@ export default function SizesColorsQuantitySection({
 	};
 
 	return (
-		<SectionCard>
+		<SectionCard delay={0.5}>
 			<SectionHeader>
-				<PencilRuler />
+				<div className="p-1.5 rounded-md bg-Secondary/20">
+					<PencilRuler className="text-Secondary" />
+				</div>
 				Sizes, Colors & Quantity
 			</SectionHeader>
 
 			<SectionBody>
 				<Button
+					className="bg-gray-200"
 					onClick={addVariant}
 					type="button">
 					<PlusSquare className="h-6 w-6 mr-1" /> Add Size/Color Variant
