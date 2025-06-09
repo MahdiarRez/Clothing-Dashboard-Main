@@ -51,7 +51,6 @@ export default function Page() {
 		}
 		if (!images.some((img) => img.isMain)) {
 			if (images.length > 0) {
-				// Auto-set first image as main if none is selected
 				setImages((prevImages) => {
 					const updated = [...prevImages];
 					updated[0].isMain = true;
@@ -108,12 +107,12 @@ export default function Page() {
 		try {
 			await addProduct(newProduct);
 			toast({ title: "Success", description: "Product created successfully!" });
-			// Reset form
+			console.log("hi");
 			setName("");
 			setDescription("");
 			setImages([]);
 			setVariants([]);
-			router.push("/view-products"); // Navigate to view products page
+			router.push("/products");
 		} catch (error) {
 			console.error("Failed to save product:", error);
 			toast({
@@ -127,7 +126,7 @@ export default function Page() {
 	};
 
 	return (
-		<div className="space-y-6 pb-12 pt-20">
+		<div className="space-y-6 pb-12 pt-20 relative">
 			<div className="flex flex-col items-center gap-2 mb-9">
 				<AnimateContent
 					delay={0.3}
@@ -174,10 +173,8 @@ export default function Page() {
 
 				<div className="flex justify-end">
 					<Button
-					// type="submit"
-					// size="lg"
-					// disabled={isSubmitting}>
-					>
+						className="bg-white"
+						type="submit">
 						{isSubmitting ? "Submitting..." : "Submit Product"}
 					</Button>
 				</div>

@@ -7,12 +7,14 @@ type ButtonProps = {
 	icon?: React.ReactNode;
 	children: React.ReactNode;
 	className?: string;
+	type?: "submit" | "reset" | "button";
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
 	React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export default function Button({
 	as = "button",
 	isActive = false,
+	type = "button",
 	icon,
 	children,
 	className,
@@ -22,11 +24,10 @@ export default function Button({
 
 	return (
 		<Component
+			type={type}
 			className={clsx(
-				"flex items-center gap-2 px-4 py-2 rounded-lg  transition-colors",
-				isActive
-					? "bg-Primary text-black  "
-					: "bg-gray-100 text-gray-800  hover:bg-gray-200",
+				"flex items-center gap-2 px-4 py-2 rounded-lg hover:opacity-65 transition-opacity duration-200",
+				isActive && "bg-Primary text-black",
 				className,
 			)}
 			{...props}>

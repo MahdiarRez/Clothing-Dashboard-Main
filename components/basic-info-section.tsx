@@ -1,9 +1,3 @@
-"use client";
-
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { BasicInfoProps } from "@/lib/types";
 import SectionCard from "./ui2/section-card";
 import SectionHeader from "./ui2/section-header";
@@ -27,6 +21,7 @@ export default function BasicInfoSection({
 					<input
 						className="w-full border-gray-300 border rounded-md p-3 outline-none mt-2 capitalize text-sm"
 						spellCheck={false}
+						autoComplete="off"
 						id="productName"
 						value={name}
 						onChange={(e) => setName(e.target.value)}

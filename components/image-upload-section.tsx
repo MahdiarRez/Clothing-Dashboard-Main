@@ -1,48 +1,37 @@
 "use client";
 
 import type React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import Button from "@/components/ui/button";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import { X, CheckCircle, LucideCrop, Upload } from "lucide-react";
-import type { ProductImage, ImageUploadProps } from "@/lib/types";
-import { useToast } from "@/components/ui/use-toast";
-import SectionCard from "./ui2/section-card";
-import SectionHeader from "./ui2/section-header";
-import SectionBody from "./ui2/section-body";
-import { ImageIcon } from "lucide-react";
+import { X, Upload, Star, Image as ImageIcon, Crop } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
-import { motion } from "motion/react";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import type { ProductImage, ImageUploadProps } from "@/lib/types";
+import SectionCard from "./ui2/section-card";
+import SectionHeader from "./ui2/section-header";
+import Button from "./ui/button";
 
-// Helper to convert File to Base64 Data URL
-const fileToDataUrl = (file: File): Promise<string> => {
-	return new Promise((resolve, reject) => {
+// convert File → dataURL
+const fileToDataUrl = (file: File): Promise<string> =>
+	new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.onload = () => resolve(reader.result as string);
 		reader.onerror = reject;
 		reader.readAsDataURL(file);
 	});
-};
 
-// Helper to get cropped image
-const getCroppedImg = (image: HTMLImageElement, crop: any): Promise<string> => {
+// drawImage helper expects pixel-based crop
+const getCroppedImg = (
+	image: HTMLImageElement,
+	crop: { x: number; y: number; width: number; height: number },
+): Promise<string> => {
 	const canvas = document.createElement("canvas");
 	const ctx = canvas.getContext("2d");
+	if (!ctx) throw new Error("No 2d context");
 
-	if (!ctx) {
-		throw new Error("No 2d context");
-	}
-
+	// factor from displayed size → natural size
 	const scaleX = image.naturalWidth / image.width;
 	const scaleY = image.naturalHeight / image.height;
 
@@ -51,10 +40,10 @@ const getCroppedImg = (image: HTMLImageElement, crop: any): Promise<string> => {
 
 	ctx.drawImage(
 		image,
-		crop.x * scaleX,
-		crop.y * scaleY,
-		crop.width * scaleX,
-		crop.height * scaleY,
+		crop.x,
+		crop.y,
+		crop.width,
+		crop.height,
 		0,
 		0,
 		crop.width,
@@ -62,355 +51,284 @@ const getCroppedImg = (image: HTMLImageElement, crop: any): Promise<string> => {
 	);
 
 	return new Promise((resolve) => {
-		canvas.toBlob((blob) => {
-			if (!blob) {
-				throw new Error("Canvas is empty");
-			}
-			const reader = new FileReader();
-			reader.onload = () => resolve(reader.result as string);
-			reader.readAsDataURL(blob);
-		}, "image/jpeg");
+		canvas.toBlob(
+			(blob) => {
+				if (!blob) throw new Error("Canvas is empty");
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result as string);
+				reader.readAsDataURL(blob);
+			},
+			"image/jpeg",
+			0.9,
+		);
 	});
 };
-
-// Grid pattern component for drag area
-function GridPattern() {
-	const columns = 20;
-	const rows = 8;
-	return (
-		<div className="flex bg-gray-50 shrink-0 flex-wrap justify-center items-center gap-x-px gap-y-px scale-105">
-			{Array.from({ length: rows }).map((_, row) =>
-				Array.from({ length: columns }).map((_, col) => {
-					const index = row * columns + col;
-					return (
-						<div
-							key={`${col}-${row}`}
-							className={`w-8 h-8 flex shrink-0 rounded-[1px] ${
-								index % 2 === 0
-									? "bg-gray-100"
-									: "bg-gray-100 shadow-[0px_0px_1px_1px_rgba(255,255,255,1)_inset]"
-							}`}
-						/>
-					);
-				}),
-			)}
-		</div>
-	);
-}
-
-// Image crop dialog component
-function ImageCropDialog({
-	image,
-	onCropComplete,
-	children,
-}: {
-	image: ProductImage;
-	onCropComplete: (croppedDataUrl: string) => void;
-	children: React.ReactNode;
-}) {
-	const [crop, setCrop] = useState<any>();
-	const [imgRef, setImgRef] = useState<HTMLImageElement>();
-	const [isOpen, setIsOpen] = useState(false);
-
-	const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-		const { width, height } = e.currentTarget;
-		setImgRef(e.currentTarget);
-
-		const crop = centerCrop(
-			makeAspectCrop(
-				{
-					unit: "%",
-					width: 90,
-				},
-				1,
-				width,
-				height,
-			),
-			width,
-			height,
-		);
-		setCrop(crop);
-	};
-
-	const handleCropComplete = async () => {
-		if (imgRef && crop) {
-			try {
-				const croppedImageUrl = await getCroppedImg(imgRef, crop);
-				onCropComplete(croppedImageUrl);
-				setIsOpen(false);
-			} catch (error) {
-				console.error("Error cropping image:", error);
-			}
-		}
-	};
-
-	return (
-		<Dialog
-			open={isOpen}
-			onOpenChange={setIsOpen}>
-			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent className="max-w-4xl">
-				<DialogHeader>
-					<DialogTitle>Crop Image</DialogTitle>
-				</DialogHeader>
-				<div className="space-y-4">
-					<div className="flex justify-center">
-						<ReactCrop
-							crop={crop}
-							onChange={(c) => setCrop(c)}
-							aspect={1}>
-							<Image
-								src={image.dataUrl || "/placeholder.svg"}
-								alt="Crop preview"
-								width={400}
-								height={400}
-								onLoad={onImageLoad}
-								className="max-w-full h-auto"
-							/>
-						</ReactCrop>
-					</div>
-					<div className="flex justify-end gap-2">
-						<Button onClick={() => setIsOpen(false)}>Cancel</Button>
-						<Button onClick={handleCropComplete}>Apply Crop</Button>
-					</div>
-				</div>
-			</DialogContent>
-		</Dialog>
-	);
-}
 
 export default function ImageUploadSection({
 	images,
 	setImages,
 }: ImageUploadProps) {
 	const { toast } = useToast();
-	const [isDragOver, setIsDragOver] = useState(false);
+	const [croppingImage, setCroppingImage] = useState<ProductImage | null>(null);
+	const [crop, setCrop] = useState<any>();
+	const imgRef = useRef<HTMLImageElement>(null);
 
 	const processFiles = async (files: File[]) => {
-		const newImagesPromises = files.map(async (file) => {
-			try {
-				const dataUrl = await fileToDataUrl(file);
-				return {
-					id: crypto.randomUUID(),
-					name: file.name,
-					dataUrl,
-					isMain: images.length === 0 && files.length === 1,
-				} as ProductImage;
-			} catch (error) {
-				console.error("Error converting file to data URL:", error);
-				toast({
-					title: "Image Upload Error",
-					description: `Could not process ${file.name}.`,
-					variant: "destructive",
-				});
-				return null;
-			}
-		});
-
-		const resolvedNewImages = (await Promise.all(newImagesPromises)).filter(
-			(img) => img !== null,
-		) as ProductImage[];
-
-		if (
-			images.length === 0 &&
-			resolvedNewImages.length > 0 &&
-			!resolvedNewImages.some((img) => img.isMain)
-		) {
-			resolvedNewImages[0].isMain = true;
-		}
-
-		setImages([...images, ...resolvedNewImages]);
-	};
-
-	const handleImageUpload = async (
-		event: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		const files = event.target.files;
-		if (!files) return;
-		await processFiles(Array.from(files));
+		const newImgs = await Promise.all(
+			files.map(async (file) => {
+				try {
+					const dataUrl = await fileToDataUrl(file);
+					return {
+						id: crypto.randomUUID(),
+						name: file.name,
+						dataUrl,
+						isMain: images.length === 0 && files.length === 1,
+					} as ProductImage;
+				} catch {
+					toast({
+						title: "Upload Error",
+						description: `Could not process ${file.name}.`,
+						variant: "destructive",
+					});
+					return null;
+				}
+			}),
+		);
+		const valid = newImgs.filter(Boolean) as ProductImage[];
+		if (valid.length) setImages([...images, ...valid]);
 	};
 
 	const onDrop = useCallback(
-		async (acceptedFiles: File[]) => {
-			setIsDragOver(false);
-			await processFiles(acceptedFiles);
+		async (accepted: File[]) => {
+			await processFiles(accepted);
 		},
-		[images],
+		[images, setImages],
 	);
 
 	const { getRootProps, getInputProps, isDragActive } = useDropzone({
 		onDrop,
-		accept: {
-			"image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"],
-		},
+		accept: { "image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"] },
 		multiple: true,
 		noClick: true,
-		onDragEnter: () => setIsDragOver(true),
-		onDragLeave: () => setIsDragOver(false),
 	});
 
+	const fileInputRef = useRef<HTMLInputElement>(null);
 	const removeImage = (id: string) => {
-		const remainingImages = images.filter((img) => img.id !== id);
-		if (
-			images.find((img) => img.id === id)?.isMain &&
-			remainingImages.length > 0
-		) {
-			if (!remainingImages.some((img) => img.isMain)) {
-				remainingImages[0].isMain = true;
-			}
+		const remaining = images.filter((img) => img.id !== id);
+		if (images.find((img) => img.id === id)?.isMain && remaining.length) {
+			remaining[0].isMain = true;
 		}
-		setImages(remainingImages);
+		setImages(remaining);
 	};
-
-	const setMainImage = (id: string) => {
+	const setMainImage = (id: string) =>
 		setImages(images.map((img) => ({ ...img, isMain: img.id === id })));
+
+	const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+		const { width, height } = e.currentTarget;
+		const initial = centerCrop(
+			makeAspectCrop({ unit: "%", width: 90 }, 1, width, height),
+			width,
+			height,
+		);
+		setCrop(initial);
 	};
 
-	const updateImageAfterCrop = (id: string, croppedDataUrl: string) => {
-		setImages(
-			images.map((img) =>
-				img.id === id ? { ...img, dataUrl: croppedDataUrl } : img,
-			),
-		);
+	// *** UPDATED to convert % → px right before drawing ***
+	const handleCropComplete = async () => {
+		if (!croppingImage || !crop || !imgRef.current) return;
+
+		const imageEl = imgRef.current;
+		const nW = imageEl.naturalWidth;
+		const nH = imageEl.naturalHeight;
+		const dW = imageEl.width;
+		const dH = imageEl.height;
+		const pxX = (crop.x / 100) * nW;
+		const pxY = (crop.y / 100) * nH;
+		const pxW = (crop.width / 100) * nW;
+		const pxH = (crop.height / 100) * nH;
+
+		try {
+			const croppedDataUrl = await getCroppedImg(imageEl, {
+				x: pxX,
+				y: pxY,
+				width: pxW,
+				height: pxH,
+			});
+			setImages(
+				images.map((img) =>
+					img.id === croppingImage.id
+						? { ...img, dataUrl: croppedDataUrl }
+						: img,
+				),
+			);
+			setCroppingImage(null);
+			toast({
+				title: "Image Cropped",
+				description: "The image has been successfully cropped.",
+			});
+		} catch {
+			toast({
+				title: "Crop Error",
+				description: "Could not crop the image.",
+				variant: "destructive",
+			});
+		}
 	};
 
 	return (
-		<SectionCard>
+		<SectionCard className="overflow-hidden">
 			<SectionHeader>
-				<ImageIcon /> Product Images
+				<ImageIcon size={30} />
+				Visual Portfolio
 			</SectionHeader>
-			<SectionBody>
-				{/* Enhanced Drag & Drop Upload Area */}
+			<div className="px-6 py-4 space-y-6">
+				{/* Upload */}
 				<div
 					{...getRootProps()}
-					className="relative">
-					<motion.div
-						className={`
-              border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
-              ${
-								isDragActive || isDragOver
-									? "border-primary bg-primary/5 scale-[1.02]"
-									: "border-gray-300 hover:border-gray-400 hover:bg-gray-50/50"
-							}
-            `}
-						whileHover={{ scale: 1.01 }}
-						whileTap={{ scale: 0.99 }}>
-						<input {...getInputProps()} />
-						<Input
-							id="imageUpload"
-							type="file"
-							multiple
-							accept="image/*"
-							onChange={handleImageUpload}
-							className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-						/>
-
-						{/* Grid Pattern Background */}
-						<div className="absolute inset-0 overflow-hidden rounded-xl opacity-30">
-							<GridPattern />
+					onClick={() => fileInputRef.current?.click()}
+					className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer ${
+						isDragActive
+							? "border-black bg-gray-50"
+							: "border-gray-300 hover:border-gray-400 hover:bg-gray-100/50"
+					}`}>
+					<input
+						{...getInputProps()}
+						ref={fileInputRef}
+						className="hidden"
+					/>
+					<div className="space-y-4">
+						<div className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+							<Upload
+								size={32}
+								className="text-gray-600"
+							/>
 						</div>
-
-						<div className="relative z-10 space-y-4">
-							<motion.div
-								className="mx-auto w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center"
-								animate={isDragActive ? { scale: 1.1 } : { scale: 1 }}>
-								<Upload className="h-8 w-8 text-gray-600" />
-							</motion.div>
-							<div>
-								<p className="text-lg font-medium text-gray-900">
-									{isDragActive
-										? "Drop your images here!"
-										: "Upload Product Images"}
-								</p>
-								<p className="text-gray-500 text-sm mt-1">
-									Drag & drop or click to select multiple images
-								</p>
-							</div>
-						</div>
-					</motion.div>
+						<p className="text-lg font-medium text-gray-900">
+							{isDragActive ? "Release to upload" : "Upload Images"}
+						</p>
+						<p className="text-gray-500 text-sm mt-1">
+							Drag & drop or click to select
+						</p>
+					</div>
 				</div>
 
-				{/* Image Gallery */}
+				{/* Gallery */}
 				{images.length > 0 && (
-					<motion.div
-						initial={{ opacity: 0, height: 0 }}
-						animate={{ opacity: 1, height: "auto" }}
-						className="space-y-4">
-						<div className="flex items-center justify-between">
+					<div className="space-y-4">
+						<div className="flex justify-between">
 							<h4 className="font-medium text-gray-900">
 								Gallery ({images.length})
 							</h4>
 							<span className="text-sm text-gray-500">
-								Hover to edit • Click star to set main
+								Hover to Crop • Click star to set main
 							</span>
 						</div>
-
 						<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-							{images.map((image, index) => (
-								<motion.div
-									key={image.id}
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ delay: index * 0.1 }}
-									className="relative group border rounded-md overflow-hidden aspect-square">
+							{images.map((img) => (
+								<div
+									key={img.id}
+									className="relative group bg-white rounded-xl overflow-hidden aspect-square border border-gray-200 hover:shadow-lg">
 									<Image
-										src={image.dataUrl || "/placeholder.svg"}
-										alt={image.name}
+										src={img.dataUrl || "/placeholder.svg"}
+										alt={img.name}
 										fill
-										className="object-cover transition-transform duration-300 group-hover:scale-105"
+										className="object-cover transition-transform group-hover:scale-105"
 									/>
-
-									{/* Hover Overlay */}
-									<div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 space-y-1">
-										{/* Crop Button */}
-										<ImageCropDialog
-											image={image}
-											onCropComplete={(croppedDataUrl) =>
-												updateImageAfterCrop(image.id, croppedDataUrl)
-											}>
-											<Button className="h-7 w-7 bg-blue-500 hover:bg-blue-600">
-												<LucideCrop className="h-4 w-4" />
-											</Button>
-										</ImageCropDialog>
-
-										{/* Remove Button */}
+									<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center space-y-2 p-2">
 										<Button
-											className="h-7 w-7 bg-red-500 hover:bg-red-600"
-											onClick={() => removeImage(image.id)}>
-											<X className="h-4 w-4" />
+											className="bg-white text-xs min-w-20"
+											onClick={() => setCroppingImage(img)}>
+											<Crop size={16} /> Crop
 										</Button>
-
-										{/* Set Main Button */}
 										<Button
-											className={`h-7 px-2 text-xs ${
-												image.isMain
-													? "bg-yellow-500 hover:bg-yellow-600"
-													: "bg-gray-500 hover:bg-gray-600"
-											}`}
-											onClick={() => setMainImage(image.id)}>
-											{image.isMain ? (
-												<CheckCircle className="h-4 w-4 mr-1" />
-											) : null}
-											{image.isMain ? "Main" : "Set Main"}
+											onClick={() => removeImage(img.id)}
+											className="bg-red-400 text-xs min-w-20">
+											<X size={13} /> Trash
+										</Button>
+										<Button
+											onClick={() => setMainImage(img.id)}
+											className={`text-xs ${
+												img.isMain
+													? "bg-yellow-500 text-black"
+													: "bg-white/90 text-black"
+											}`}>
+											<Star
+												size={14}
+												className={img.isMain ? "fill-current" : ""}
+											/>{" "}
+											Main
 										</Button>
 									</div>
-
-									{/* Main Image Indicator */}
-									{image.isMain && (
-										<motion.div
-											initial={{ scale: 0 }}
-											animate={{ scale: 1 }}
-											className="absolute top-1 right-1 bg-primary text-primary-foreground p-1 rounded-full"
-											title="Main image">
-											<CheckCircle className="h-4 w-4" />
-										</motion.div>
+									{img.isMain && (
+										<div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 p-1.5 rounded-full">
+											<Star
+												size={16}
+												className="fill-current"
+											/>
+										</div>
 									)}
-								</motion.div>
+								</div>
 							))}
 						</div>
-					</motion.div>
+					</div>
 				)}
-			</SectionBody>
+			</div>
+
+			{/* Crop Modal */}
+			{croppingImage && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center">
+					<div
+						className="absolute inset-0 bg-black bg-opacity-50"
+						onClick={() => setCroppingImage(null)}
+					/>
+					<div className="relative bg-white rounded-xl shadow-2xl w-full mx-4 max-w-4xl max-h-[90vh] overflow-hidden">
+						<div className="flex items-center justify-between p-6 border-b">
+							<h2 className="text-xl font-semibold text-center">
+								Crop Your Image
+							</h2>
+							<Button
+								onClick={() => setCroppingImage(null)}
+								className="p-0  text-white bg-red-400 hover:text-gray-600">
+								<X size={20} />
+							</Button>
+						</div>
+						<div className="p-6 overflow-auto max-h-[calc(90vh-8rem)]">
+							<div className="flex flex-col items-center space-y-4">
+								<div className="w-full max-w-[500px] flex justify-center">
+									<ReactCrop
+										crop={crop}
+										onChange={(_, percentCrop) => setCrop(percentCrop)}
+										aspect={1}
+										minWidth={100}
+										minHeight={100}>
+										<Image
+											ref={imgRef}
+											src={croppingImage.dataUrl || "/placeholder.svg"}
+											alt="Crop preview"
+											onLoad={onImageLoad}
+											width={300}
+											height={300}
+											style={{ maxHeight: "60vh", maxWidth: "100%" }}
+										/>
+									</ReactCrop>
+								</div>
+								<div className="flex justify-end space-x-3 w-full pt-4">
+									<Button
+										className="bg-gray-300"
+										onClick={() => setCroppingImage(null)}>
+										Cancel
+									</Button>
+									<Button
+										isActive
+										onClick={handleCropComplete}>
+										Apply Crop
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</SectionCard>
 	);
 }

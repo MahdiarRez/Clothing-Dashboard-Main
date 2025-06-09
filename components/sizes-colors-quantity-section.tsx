@@ -88,7 +88,7 @@ export default function SizesColorsQuantitySection({
 								<TableHead>Size</TableHead>
 								<TableHead>Color</TableHead>
 								<TableHead>Quantity</TableHead>
-								<TableHead className="w-[50px]">Action</TableHead>
+								<TableHead className="w-[50px]"></TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -100,15 +100,15 @@ export default function SizesColorsQuantitySection({
 											onValueChange={(value) =>
 												updateVariant(variant.id, "size", value)
 											}>
-											<SelectTrigger className="focus:outline-none">
-												<SelectValue placeholder="Select size" />
+											<SelectTrigger>
+												<SelectValue />
 											</SelectTrigger>
 											<SelectContent>
-												{AVAILABLE_SIZES.map((s) => (
+												{AVAILABLE_SIZES.map((size) => (
 													<SelectItem
-														key={s}
-														value={s}>
-														{s}
+														key={size}
+														value={size}>
+														{size}
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -117,18 +117,19 @@ export default function SizesColorsQuantitySection({
 									<TableCell>
 										<Select
 											value={variant.color}
-											onValueChange={(value) =>
-												updateVariant(variant.id, "color", value)
-											}>
+											onValueChange={(value) => {
+												console.log(variants);
+												return updateVariant(variant.id, "color", value);
+											}}>
 											<SelectTrigger>
-												<SelectValue placeholder="Select color" />
+												<SelectValue />
 											</SelectTrigger>
 											<SelectContent>
-												{AVAILABLE_COLORS.map((c) => (
+												{AVAILABLE_COLORS.map((color) => (
 													<SelectItem
-														key={c}
-														value={c}>
-														{c}
+														key={color}
+														value={color}>
+														{color}
 													</SelectItem>
 												))}
 											</SelectContent>
@@ -146,14 +147,14 @@ export default function SizesColorsQuantitySection({
 												)
 											}
 											min="0"
-											className="w-24"
+											className="w-20"
 										/>
 									</TableCell>
 									<TableCell>
 										<Button
 											type="button"
 											onClick={() => removeVariant(variant.id)}>
-											<Trash2 className="h-4 w-4 text-destructive" />
+											<Trash2 className="h-4 w-4" />
 										</Button>
 									</TableCell>
 								</TableRow>

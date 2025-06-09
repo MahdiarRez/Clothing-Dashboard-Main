@@ -2,7 +2,6 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import Navigation from "@/components/navigation";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -19,20 +18,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html
-			lang="en"
-			suppressHydrationWarning>
+		<html lang="en">
 			<body
-				className={`${inter.className} bg-gradient-to-tr from-Primary via-Primary/50 to-Primary`}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange>
-					<Navigation />
-					<main className="container mx-auto p-4 pt-20">{children}</main>
-					<Toaster />
-				</ThemeProvider>
+				className={`${inter.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
+				<Navigation />
+				<main className="container mx-auto p-4 pt-20">{children}</main>
+				<Toaster />
 			</body>
 		</html>
 	);
