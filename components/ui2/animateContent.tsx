@@ -1,3 +1,4 @@
+"use client";
 import React, { useRef, useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -66,7 +67,7 @@ const AnimateContent: React.FC<AnimatedContentProps> = ({
 				once: true,
 			},
 		});
-
+		ScrollTrigger.refresh();
 		return () => {
 			ScrollTrigger.getAll().forEach((t) => t.kill());
 			gsap.killTweensOf(el);

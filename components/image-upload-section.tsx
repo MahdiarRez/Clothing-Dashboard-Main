@@ -200,7 +200,7 @@ export default function ImageUploadSection({
 						<p className="text-lg font-medium text-gray-900">
 							{isDragActive ? "Release to upload" : "Upload Images"}
 						</p>
-						<p className="text-gray-500 text-sm mt-1">
+						<p className="text-gray-500 sm:text-sm mt-1">
 							Drag & drop or click to select
 						</p>
 					</div>
@@ -213,7 +213,7 @@ export default function ImageUploadSection({
 							<h4 className="font-medium text-gray-900">
 								Gallery ({images.length})
 							</h4>
-							<span className="text-sm text-gray-500">
+							<span className="text-xs sm:text-sm text-gray-500">
 								Hover to Crop • Click star to set main
 							</span>
 						</div>

@@ -25,7 +25,7 @@ export default function RootLayout({
 			<body
 				className={`${inter.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
 				<Navigation />
-				<main className="container mx-auto pt-12">{children}</main>
+				<main className="container mx-auto pt-12 px-4">{children}</main>
 				<Toaster position="bottom-left" />
 			</body>
 		</html>

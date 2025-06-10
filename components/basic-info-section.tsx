@@ -22,7 +22,7 @@ export default function BasicInfoSection({
 				<div>
 					<label htmlFor="productName">Product Name</label>
 					<input
-						className="w-full border-gray-300 border rounded-md p-3 outline-none mt-2 capitalize text-sm"
+						className="w-full tracking-wide border-gray-300 border rounded-md p-3 outline-none mt-2 capitalize text-sm"
 						spellCheck={false}
 						autoComplete="off"
 						id="productName"
@@ -35,9 +35,10 @@ export default function BasicInfoSection({
 				<div>
 					<label htmlFor="productDescription">Product Description</label>
 					<textarea
-						className="w-full border-gray-300 border rounded-md p-3 outline-none mt-2 min-h-20 max-h-52 text-sm"
+						className="w-full border-gray-300 border rounded-md p-3 outline-none mt-2 min-h-20 max-h-52 text-sm tracking-wide"
 						id="productDescription"
 						value={description}
+						spellCheck={false}
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Describe the product..."
 						rows={4}

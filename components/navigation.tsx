@@ -23,22 +23,22 @@ export default function Navigation() {
 	];
 
 	return (
-		<nav className=" container mx-auto">
+		<nav className=" container mx-auto px-4 sm:px-10">
 			<div className="mx-auto flex h-20 items-center justify-between">
 				<Link
 					href="/"
-					className="flex items-center gap-2 font-bold text-lg">
-					<span>Clothing Dashboard</span>
+					className="flex items-center gap-2 font-bold text-sm sm:text-lg md:text-xl">
+					<span>Dashboard</span>
 				</Link>
-				<div className="flex items-center gap-9">
+				<div className="flex items-center gap-5 sm:gap-9">
 					{navItems.map((item) => (
 						<Link
 							href={item.href}
 							className={clsx(
-								`font-medium text-black transition-all duration-200`,
+								`font-medium text-sm sm:text-base sm:tracking-normal tracking-tight text-nowrap transition-all duration-200`,
 								pathname == item.href
 									? "text-Secondary/90 opacity-90 cursor-default"
-									: "hover:opacity-40",
+									: "hover:opacity-40 text-black",
 							)}
 							key={item.href}>
 							{item.label}

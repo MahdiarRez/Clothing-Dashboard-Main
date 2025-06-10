@@ -9,7 +9,7 @@ import SizesColorsQuantitySection from "@/components/sizes-colors-quantity-secti
 import { addProduct, initDB } from "@/lib/db";
 import type { Product, ProductImage, ProductVariant } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { Smile } from "lucide-react";
+import { Check, Smile } from "lucide-react";
 import AnimateContent from "@/components/ui2/animateContent";
 import toast from "react-hot-toast";
 import HeroHeader from "@/components/ui2/heroHeader";
@@ -105,7 +105,7 @@ export default function Page() {
 	};
 
 	return (
-		<div className="space-y-6 pb-12 pt-16 relative">
+		<div className="space-y-6 pb-32 pt-16 relative">
 			<HeroHeader>
 				Create New Product
 				<Smile
@@ -132,10 +132,11 @@ export default function Page() {
 					totalQuantity={totalQuantity}
 				/>
 
-				<div className="flex justify-end">
+				<div className="flex justify-start">
 					<Button
-						className="bg-white"
+						className="bg-Secondary text-white px-6 py-3"
 						type="submit">
+						<Check />
 						{isSubmitting ? "Submitting..." : "Submit Product"}
 					</Button>
 				</div>
