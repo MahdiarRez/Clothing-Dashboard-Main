@@ -36,7 +36,13 @@ function ProductsBody() {
 	}
 
 	if (products.length === 0) {
-		return <p>No products found.</p>;
+		return (
+			<div className="h-full w-full flex justify-center items-center">
+				<p className="font-medium text-lg text-center">
+					No products found. Add some !
+				</p>
+			</div>
+		);
 	}
 
 	return (

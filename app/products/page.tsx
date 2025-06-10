@@ -4,7 +4,7 @@ import ProductsBody from "@/components/productsBody";
 
 export default function Page() {
 	return (
-		<div className="space-y-6 pb-12 pt-16 relative">
+		<div className="space-y-6 pb-32 pt-16 relative ">
 			<HeroHeader>
 				List of Your Porducts
 				<Laugh

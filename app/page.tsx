@@ -104,7 +104,7 @@ export default function Page() {
 	};
 
 	return (
-		<div className="space-y-6 pb-32 pt-16 relative">
+		<div className="space-y-6 pb-32 min-h-dvh pt-16 relative">
 			<HeroHeader>
 				Create New Product
 				<Smile

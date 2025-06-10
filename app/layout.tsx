@@ -1,7 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import "@/styles/globals.css";
 import Navigation from "@/components/navigation";
 import { Toaster } from "react-hot-toast";
 
@@ -25,7 +25,9 @@ export default function RootLayout({
 			<body
 				className={`${PoppinsF.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
 				<Navigation />
-				<main className="container mx-auto pt-12 px-4">{children}</main>
+				<main className="container mx-auto pt-12 px-4 min-h-dvh">
+					{children}
+				</main>
 				<Toaster position="bottom-left" />
 			</body>
 		</html>
