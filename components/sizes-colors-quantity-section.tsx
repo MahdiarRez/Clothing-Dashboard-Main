@@ -9,7 +9,10 @@ import {
 	AVAILABLE_SIZES,
 	AVAILABLE_COLORS,
 } from "@/lib/types";
-import Button from "./ui/button";
+import Button from "./ui2/button";
+import SectionCard from "./ui2/section-card";
+import SectionHeader from "./ui2/section-header";
+import SectionBody from "./ui2/section-body";
 
 type DropdownProps = {
 	options: string[];
@@ -35,7 +38,7 @@ function Dropdown({ options, value, onChange, renderLabel }: DropdownProps) {
 	return (
 		<div
 			ref={container}
-			className=" w-full">
+			className="w-full">
 			<button
 				type="button"
 				onClick={() => setOpen((o) => !o)}
@@ -116,20 +119,15 @@ export default function SizesColorsQuantitySection({
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow ">
-			{/* Header */}
-			<div className="flex items-center px-6 py-4 border-b">
-				<div className="p-1.5 rounded-md bg-secondary/20 mr-2">
-					<PencilRuler
-						className="text-secondary"
-						size={18}
-					/>
+		<SectionCard>
+			<SectionHeader>
+				<div className="p-1.5 rounded-md bg-Secondary/20">
+					<PencilRuler className="text-Secondary" />
 				</div>
 				<h2 className="text-lg font-medium">Sizes, Colors & Quantity</h2>
-			</div>
+			</SectionHeader>
 
-			{/* Body */}
-			<div className="p-6 px-4 sm:px-6 space-y-4 ">
+			<SectionBody>
 				<Button
 					type="button"
 					onClick={addVariant}
@@ -188,22 +186,29 @@ export default function SizesColorsQuantitySection({
 										<td className="px-1.5 sm:px-4 py-2">
 											<input
 												type="number"
-												value={v.quantity}
-												onChange={(e) =>
-													updateVariant(
-														v.id,
-														"quantity",
-														Number(e.target.value),
-													)
-												}
+												min="1"
+												step="1"
+												value={v.quantity === 0 ? "" : v.quantity}
+												onChange={(e) => {
+													let raw = e.target.value;
+													raw = raw.replace(/^0+(?=\d)/, "");
+													if (raw === "") {
+														updateVariant(v.id, "quantity", 0);
+													} else {
+														const num = Number(raw);
+														if (num > 0) {
+															updateVariant(v.id, "quantity", num);
+														}
+													}
+												}}
 												className="w-10 sm:w-20 border rounded-md px-2 py-1.5 outline-none"
 											/>
 										</td>
-										<td className="px-4 py-2 text-center">
+										<td className="px-1 sm:px-4 py-2 text-center">
 											<button
 												type="button"
 												onClick={() => removeVariant(v.id)}
-												className="p-2 hover:bg-red-100 rounded-lg">
+												className="p-1.5 sm:p-2 hover:bg-red-100 rounded-lg">
 												<Trash2 className="h-4 w-4 text-red-600" />
 											</button>
 										</td>
@@ -219,7 +224,7 @@ export default function SizesColorsQuantitySection({
 						Total Quantity : {totalQuantity}
 					</span>
 				</div>
-			</div>
-		</div>
+			</SectionBody>
+		</SectionCard>
 	);
 }

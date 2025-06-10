@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Button from "@/components/ui/button";
-import { Eye, Shirt, SquarePlus } from "lucide-react";
+import { Eye, SquarePlus } from "lucide-react";
 import clsx from "clsx";
 
 export default function Navigation() {

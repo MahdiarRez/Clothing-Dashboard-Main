@@ -54,9 +54,9 @@ function ProductsBody() {
 								{product.description || "No description."}
 							</p>
 						</div>
-						<div className="flex-grow px-6 pb-6 space-y-4">
+						<div className="flex-grow px-6 pb-6 space-y-4 ">
 							{mainImage && (
-								<div className="relative w-full h-48 rounded-md overflow-hidden border">
+								<div className="relative w-full h-48 rounded-lg overflow-hidden border">
 									<Image
 										src={mainImage.dataUrl || "/placeholder.svg"}
 										alt={mainImage.name}
@@ -74,7 +74,7 @@ function ProductsBody() {
 											.map((img) => (
 												<div
 													key={img.id}
-													className="relative w-16 h-16 rounded-md overflow-hidden border shrink-0">
+													className="relative w-16 h-16 rounded-lg overflow-hidden border shrink-0">
 													<Image
 														src={img.dataUrl || "/placeholder.svg"}
 														alt={img.name}
@@ -89,12 +89,16 @@ function ProductsBody() {
 
 							<h4 className="font-semibold">Variants:</h4>
 							{product.variants.length > 0 ? (
-								<table className="w-full text-sm border border-gray-200 rounded-md overflow-hidden">
+								<table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden  max-h-20">
 									<thead className="bg-gray-100">
 										<tr>
-											<th className="text-left px-3 py-2">Size</th>
-											<th className="text-left px-3 py-2">Color</th>
-											<th className="text-left px-3 py-2">Qty</th>
+											<th className="text-left font-semibold px-3 py-2">
+												Size
+											</th>
+											<th className="text-left font-semibold px-3 py-2">
+												Color
+											</th>
+											<th className="text-left font-semibold px-3 py-2">Qty</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -114,7 +118,7 @@ function ProductsBody() {
 							)}
 						</div>
 						<div className="px-6 py-4 border-t flex justify-between items-center">
-							<span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+							<span className="text-sm bg-gray-200 px-2 py-1 rounded-md">
 								Total: {product.totalQuantity}
 							</span>
 							<span className="text-xs text-gray-400">

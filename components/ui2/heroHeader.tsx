@@ -1,6 +1,4 @@
 "use client";
-import { Smile } from "lucide-react";
-import AnimateContent from "./animateContent";
 import React from "react";
 
 function HeroHeader({ children }: { children: React.ReactNode }) {

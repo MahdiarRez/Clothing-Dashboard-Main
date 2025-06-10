@@ -1,8 +1,6 @@
 import { Laugh } from "lucide-react";
 import HeroHeader from "@/components/ui2/heroHeader";
-import ProductsBodySkeleton from "@/components/skeleton/productsBodySkeleton";
 import ProductsBody from "@/components/productsBody";
-import { Suspense } from "react";
 
 export default function Page() {
 	return (

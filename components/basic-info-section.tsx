@@ -2,7 +2,7 @@ import type { BasicInfoProps } from "@/lib/types";
 import SectionCard from "./ui2/section-card";
 import SectionHeader from "./ui2/section-header";
 import SectionBody from "./ui2/section-body";
-import { BookText, Info } from "lucide-react";
+import { Info } from "lucide-react";
 
 export default function BasicInfoSection({
 	name,

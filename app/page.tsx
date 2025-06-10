@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect, useMemo } from "react";
-import Button from "@/components/ui/button";
+import Button from "@/components/ui2/button";
 import BasicInfoSection from "@/components/basic-info-section";
 import ImageUploadSection from "@/components/image-upload-section";
 import SizesColorsQuantitySection from "@/components/sizes-colors-quantity-section";
@@ -10,7 +10,6 @@ import { addProduct, initDB } from "@/lib/db";
 import type { Product, ProductImage, ProductVariant } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { Check, Smile } from "lucide-react";
-import AnimateContent from "@/components/ui2/animateContent";
 import toast from "react-hot-toast";
 import HeroHeader from "@/components/ui2/heroHeader";
 

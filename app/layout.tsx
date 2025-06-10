@@ -1,11 +1,11 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter, Jost, Nunito, Outfit, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
-const inter = Poppins({
+const PoppinsF = Poppins({
 	subsets: ["latin"],
 	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
@@ -23,7 +23,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${inter.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
+				className={`${PoppinsF.className} bg-gradient-to-tr from-Primary/80 via-Primary/50 to-Primary/80`}>
 				<Navigation />
 				<main className="container mx-auto pt-12 px-4">{children}</main>
 				<Toaster position="bottom-left" />

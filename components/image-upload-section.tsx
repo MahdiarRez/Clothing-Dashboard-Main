@@ -10,10 +10,10 @@ import "react-image-crop/dist/ReactCrop.css";
 import type { ProductImage, ImageUploadProps } from "@/lib/types";
 import SectionCard from "./ui2/section-card";
 import SectionHeader from "./ui2/section-header";
-import Button from "./ui/button";
+import Button from "./ui2/button";
 import toast from "react-hot-toast";
 
-// convert File → dataURL
+// convert File - dataURL
 const fileToDataUrl = (file: File): Promise<string> =>
 	new Promise((resolve, reject) => {
 		const reader = new FileReader();
@@ -31,7 +31,7 @@ const getCroppedImg = (
 	const ctx = canvas.getContext("2d");
 	if (!ctx) throw new Error("No 2d context");
 
-	// factor from displayed size → natural size
+	// factor from displayed size - natural size
 	const scaleX = image.naturalWidth / image.width;
 	const scaleY = image.naturalHeight / image.height;
 
@@ -128,7 +128,7 @@ export default function ImageUploadSection({
 		setCrop(initial);
 	};
 
-	// *** UPDATED to convert % → px right before drawing ***
+	// Update to convert % - px right before drawing
 	const handleCropComplete = async () => {
 		if (!croppingImage || !crop || !imgRef.current) return;
 
