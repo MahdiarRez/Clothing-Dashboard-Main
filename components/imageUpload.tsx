@@ -8,9 +8,9 @@ import { useDropzone } from "react-dropzone";
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import type { ProductImage, ImageUploadProps } from "@/lib/types";
-import SectionCard from "./ui2/section-card";
-import SectionHeader from "./ui2/section-header";
-import Button from "./ui2/button";
+import SectionCard from "./ui/sectionCard";
+import SectionHeader from "./ui/sectionHeader";
+import Button from "./ui/button";
 import toast from "react-hot-toast";
 
 // convert File - dataURL

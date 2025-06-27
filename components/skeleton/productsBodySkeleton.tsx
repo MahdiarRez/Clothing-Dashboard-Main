@@ -47,7 +47,7 @@ const ProductSkeletonCard = () => (
 
 const ProductsBodySkeleton = () => (
 	<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-		{[...Array(6)].map((_, i) => (
+		{[...Array(1)].map((_, i) => (
 			<ProductSkeletonCard key={i} />
 		))}
 	</div>

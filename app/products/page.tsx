@@ -1,5 +1,5 @@
 import { Laugh } from "lucide-react";
-import HeroHeader from "@/components/ui2/heroHeader";
+import HeroHeader from "@/components/ui/heroHeader";
 import ProductsBody from "@/components/productsBody";
 
 export default function Page() {

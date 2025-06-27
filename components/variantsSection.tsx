@@ -1,18 +1,27 @@
 "use client";
 
+const AVAILABLE_SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
+const AVAILABLE_COLORS = [
+	"Black",
+	"White",
+	"Red",
+	"Blue",
+	"Green",
+	"Yellow",
+	"Gray",
+];
+
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, PencilRuler, PlusSquare, Trash2 } from "lucide-react";
 import {
 	type ProductVariant,
 	type SizesColorsQuantityProps,
-	AVAILABLE_SIZES,
-	AVAILABLE_COLORS,
 } from "@/lib/types";
-import Button from "./ui2/button";
-import SectionCard from "./ui2/section-card";
-import SectionHeader from "./ui2/section-header";
-import SectionBody from "./ui2/section-body";
+import Button from "./ui/button";
+import SectionCard from "./ui/sectionCard";
+import SectionHeader from "./ui/sectionHeader";
+import SectionBody from "./ui/sectionBody";
 
 type DropdownProps = {
 	options: string[];

@@ -2,16 +2,16 @@
 
 import type React from "react";
 import { useState, useEffect, useMemo } from "react";
-import Button from "@/components/ui2/button";
-import BasicInfoSection from "@/components/basic-info-section";
-import ImageUploadSection from "@/components/image-upload-section";
-import SizesColorsQuantitySection from "@/components/sizes-colors-quantity-section";
+import Button from "@/components/ui/button";
+import BasicInfoSection from "@/components/basicInfo";
+import ImageUploadSection from "@/components/imageUpload";
+import SizesColorsQuantitySection from "@/components/variantsSection";
 import { addProduct, initDB } from "@/lib/db";
 import type { Product, ProductImage, ProductVariant } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { Check, Smile } from "lucide-react";
 import toast from "react-hot-toast";
-import HeroHeader from "@/components/ui2/heroHeader";
+import HeroHeader from "@/components/ui/heroHeader";
 
 export default function Page() {
 	const [name, setName] = useState("");
